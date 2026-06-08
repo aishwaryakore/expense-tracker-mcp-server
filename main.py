@@ -3,6 +3,7 @@ import os
 import sqlite3
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "expenses.db")
+CATEGORIES_PATH = os.path.join(os.path.dirname(__file__), "categories.json")
 
 mcp = FastMCP("ExpenseTracker")
 
@@ -70,6 +71,11 @@ def summarize(start_date, end_date, category=None):
         cols = [d[0] for d in cur.description]
 
         return [dict(zip(cols, r)) for r in cur.fetchall()]
+
+@mcp.resource("expense://categories", mime_type="application/json")
+def categories():
+    with open(CATEGORIES_PATH, "r", encoding="utf-8") as f:
+        return f.read()
 
     
 if __name__ == "__main__":
